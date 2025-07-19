@@ -14,6 +14,8 @@ There is no danger regarding Vanguard since the computer where League of Legends
 - The map scale must be set to 100 in the interface settings
 - Requires the use of a Riot Games API key to be renewed every 24 hours (free and very easy to get)
 
+This tool works quite well but can show some limitations, especially when two or more enemies are close to each other. Also, the detection thresholds of some champions probably need to be adjusted, but I can't test all the champions now. Feel free to create an issue if necessary.
+
 If this is not a problem for you, you can skip ahead to see how to install it.
 
 ## Getting Started
