@@ -87,6 +87,7 @@ def setup_tracker(participants):
         enemies.append({
             "champion_id": champion.get("id"),
             "champion_name": champion.get("name"),
+            "confidence_threshold": champion.get("confidenceThreshold") or CONFIDENCE_THRESHOLD,
             "last_seen_position": None,
             "last_seen_template": None,
             "last_seen_time": 0,
@@ -104,7 +105,7 @@ def show_map():
             cv2.imshow("LoL map champion tracker", black_screen_resized)
             cv2.waitKey(1)
 
-            time.sleep(FRAME_DELAY)
+            time.sleep(1)
             continue
 
         try:
@@ -123,21 +124,22 @@ def show_map():
 
             for template in enemy.get("templates"):
                 result = cv2.matchTemplate(map_screenshot_gray, template.get("gray"), cv2.TM_CCOEFF_NORMED, mask=template.get("mask"))
-                locations = np.where(result >= CONFIDENCE_THRESHOLD)
 
-                if locations[0].size > 0:
+                locations = np.where(result >= enemy.get("confidence_threshold"))
+                min_value, max_value, min_location, max_location = cv2.minMaxLoc(result)
+
+                if max_value >= enemy.get("confidence_threshold"):
                     detected = True
 
-                    point = (locations[1][0], locations[0][0])
-                    top_left = point
-                    bottom_right = (point[0] + template.get("width"), point[1] + template.get("height"))
+                    top_left = max_location
+                    bottom_right = (top_left[0] + template.get("width"), top_left[1] + template.get("height"))
 
                     cv2.rectangle(map_screenshot_bgr, top_left, bottom_right, CHAMPION_BOX_COLOR, CHAMPION_BOX_THICKNESS)
 
                     enemy["last_seen_position"] = top_left
                     enemy["last_seen_template"] = template
                     enemy["last_seen_time"] = int(time.time() * 1000)
-                    break 
+                    break
 
             if not detected and enemy.get("last_seen_position") is not None:
                 time_since_last_seen = int((time.time() * 1000 - enemy["last_seen_time"]) / 1000)
