@@ -163,6 +163,7 @@
     {
         "id": 31,
         "name": "Cho'Gath",
+        "confidenceThreshold": 0.7,
         "images": [
             "chogath.png"
         ]
