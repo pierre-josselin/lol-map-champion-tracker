@@ -97,6 +97,8 @@ def setup_tracker(participants):
 def show_map():
     global enemies
 
+    map_image = cv2.imread("map.png")
+
     while True:
         if not in_game:
             black_screen = np.zeros((558, 560, 3), dtype = np.uint8)
@@ -119,22 +121,23 @@ def show_map():
         map_screenshot_bgr = cv2.imdecode(map_screenshot_array, cv2.IMREAD_COLOR)
         map_screenshot_gray = cv2.cvtColor(map_screenshot_bgr, cv2.COLOR_BGR2GRAY)
 
+        map_image_copy = map_image.copy()
+
         for enemy in enemies:
             detected = False
 
             for template in enemy.get("templates"):
                 result = cv2.matchTemplate(map_screenshot_gray, template.get("gray"), cv2.TM_CCOEFF_NORMED, mask=template.get("mask"))
 
-                locations = np.where(result >= enemy.get("confidence_threshold"))
                 min_value, max_value, min_location, max_location = cv2.minMaxLoc(result)
 
                 if max_value >= enemy.get("confidence_threshold"):
                     detected = True
 
                     top_left = max_location
-                    bottom_right = (top_left[0] + template.get("width"), top_left[1] + template.get("height"))
-
-                    cv2.rectangle(map_screenshot_bgr, top_left, bottom_right, CHAMPION_BOX_COLOR, CHAMPION_BOX_THICKNESS)
+                    center_x = top_left[0] + template.get("width") // 2
+                    center_y = top_left[1] + template.get("height") // 2
+                    cv2.circle(map_image_copy, (center_x, center_y), 5, (0, 165, 255), -1)
 
                     enemy["last_seen_position"] = top_left
                     enemy["last_seen_template"] = template
@@ -154,13 +157,14 @@ def show_map():
 
                 x, y = enemy["last_seen_position"]
 
-                if y + height <= map_screenshot_bgr.shape[0] and x + width <= map_screenshot_bgr.shape[1]:
-                    roi = map_screenshot_bgr[y:y + height, x:x + width]
+                if y + height <= map_image_copy.shape[0] and x + width <= map_image_copy.shape[1]:
+                    roi = map_image_copy[y:y + height, x:x + width]
                     template_rgb = template_bgra[:, :, :3]
-                    alpha = (template_bgra[:, :, 3] / 255.0) * 0.5
-                    alpha = alpha[..., np.newaxis]
+                    mask = template_bgra[:, :, 3]
 
-                    map_screenshot_bgr[y:y + height, x:x + width] = cv2.addWeighted(alpha * template_rgb, 1, (1 - alpha) * roi, 1, 0).astype(np.uint8)
+                    mask_indices = mask > 0
+                    roi[mask_indices] = template_rgb[mask_indices]
+                    map_image_copy[y:y + height, x:x + width] = roi
 
                     label = f"{time_since_last_seen}s"
                     (text_width, text_height), _ = cv2.getTextSize(label, FONT, 0.5, 1)
@@ -168,11 +172,11 @@ def show_map():
                     text_y = y - 5
 
                     if text_y > text_height:
-                        cv2.putText(map_screenshot_bgr, label, (text_x, text_y), FONT, 0.5, (0, 165, 255), 1, cv2.LINE_AA)
+                        cv2.putText(map_image_copy, label, (text_x, text_y), FONT, 0.5, (0, 165, 255), 1, cv2.LINE_AA)
 
-        map_screenshot_bgr_resized = cv2.resize(map_screenshot_bgr, (0, 0), fx = GAME_MAP_SCALE, fy = GAME_MAP_SCALE, interpolation = cv2.INTER_LINEAR)
+        map_image_copy_resized = cv2.resize(map_image_copy, (0, 0), fx = GAME_MAP_SCALE, fy = GAME_MAP_SCALE, interpolation = cv2.INTER_LINEAR)
 
-        cv2.imshow("LoL map champion tracker", map_screenshot_bgr_resized)
+        cv2.imshow("LoL map champion tracker", map_image_copy_resized)
         cv2.waitKey(1)
 
         time.sleep(FRAME_DELAY)
