@@ -163,7 +163,6 @@
     {
         "id": 31,
         "name": "Cho'Gath",
-        "confidenceThreshold": 0.7,
         "images": [
             "chogath.png"
         ]
@@ -699,6 +698,7 @@
     {
         "id": 80,
         "name": "Pantheon",
+        "confidenceThreshold": 0.8,
         "images": [
             "pantheon.png"
         ]
@@ -804,6 +804,7 @@
     {
         "id": 360,
         "name": "Samira",
+        "confidenceThreshold": 0.8,
         "images": [
             "samira.png"
         ]
@@ -1126,6 +1127,7 @@
     {
         "id": 777,
         "name": "Yone",
+        "confidenceThreshold": 0.8,
         "images": [
             "yone.png"
         ]
