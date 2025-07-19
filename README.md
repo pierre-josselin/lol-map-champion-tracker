@@ -1,7 +1,8 @@
-
 # LoL map champion tracker
 
 ## About The Project
+
+![demo](https://github.com/user-attachments/assets/f001713c-3da4-40bf-b9ec-4b15049c8a7f)
 
 This tool allows to track enemy champions on the League of Legends map and show the last known location of someone missing with a timer. It also has the advantage of replicating the map in large format on another screen.
 
