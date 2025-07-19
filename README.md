@@ -37,6 +37,12 @@ If this is not a problem for you, you can skip ahead to see how to install it.
         git clone https://github.com/pierre-josselin/lol-map-screenshot-server.git
         ```
 
+    - Go to `lol-map-screenshot-server`
+
+        ```
+        cd lol-map-screenshot-server
+        ```
+
     - Create a virtual environment
 
         ```
@@ -77,6 +83,12 @@ If this is not a problem for you, you can skip ahead to see how to install it.
 
         ```
         git clone https://github.com/pierre-josselin/lol-map-champion-tracker.git
+        ```
+
+    - Go to `lol-map-champion-tracker`
+
+        ```
+        cd lol-map-champion-tracker
         ```
 
     - Create a virtual environment
