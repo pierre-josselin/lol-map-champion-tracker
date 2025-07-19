@@ -79,6 +79,9 @@ If this is not a problem for you, you can skip ahead to see how to install it.
 
     - Open .env with a text editor and review all variables
 
+        > [!IMPORTANT]  
+        > You may need to open the port in your firewall (your computer's firewall, not your router's). Check online for instructions.
+
 - On another computer
 
     - Clone [this repository](https://github.com/pierre-josselin/lol-map-champion-tracker)
