@@ -360,6 +360,7 @@
     {
         "id": 24,
         "name": "Jax",
+        "confidenceThreshold": 0.8,
         "images": [
             "jax.png"
         ]
